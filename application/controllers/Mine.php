@@ -1,4 +1,6 @@
-<?php if (!defined('BASEPATH')) {
+<?php
+
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -8,6 +10,7 @@ class Mine extends CI_Controller
     {
         parent::__construct();
         $this->load->model('Conecte_model');
+        $this->load->helper('Security_helper');
     }
 
     public function index()
@@ -32,13 +35,13 @@ class Mine extends CI_Controller
         $data['custom_error'] = '';
         $this->form_validation->set_rules('senha', 'Senha', 'required');
 
-        if ($this->input->post("token") == null || $this->input->post("token") == '') {
+        if ($this->input->post('token') == null || $this->input->post('token') == '') {
             return redirect('mine');
         }
         if ($this->form_validation->run() == false) {
-            echo json_encode(['result' => false, 'message' => "Por favor digite uma senha"]);
+            echo json_encode(['result' => false, 'message' => 'Por favor digite uma senha']);
         } else {
-            $token = $this->check_token($this->input->post("token"));
+            $token = $this->check_token($this->input->post('token'));
             $cliente = $this->check_credentials($token->email);
 
             if ($token == null && $cliente == null) {
@@ -49,7 +52,7 @@ class Mine extends CI_Controller
             } else {
                 if ($token->email == $cliente->email) {
                     $data = [
-                        'senha' => password_hash($this->input->post("senha"), PASSWORD_DEFAULT),
+                        'senha' => password_hash($this->input->post('senha'), PASSWORD_DEFAULT),
                     ];
 
                     $dataToken = [
@@ -81,16 +84,18 @@ class Mine extends CI_Controller
         $this->form_validation->set_rules('token', 'Token', 'required');
 
         if ($this->form_validation->run('token') == false) {
-            $this->session->set_flashdata(['error' => (validation_errors() ? "Por favor digite o token" : false)]);
+            $this->session->set_flashdata(['error' => (validation_errors() ? 'Por favor digite o token' : false)]);
+
             return $this->load->view('conecte/token_digita');
         } else {
-            $token = $this->check_token($this->input->post("token"));
+            $token = $this->check_token($this->input->post('token'));
 
             if ($this->validateDate($token->data_expiracao)) {
                 $this->session->set_flashdata(['error' => 'Token expirado']);
                 $session_mine_data = $token->email ? ['nome' => $token->email] : ['nome' => 'Inexistente'];
                 $this->session->set_userdata($session_mine_data);
                 log_info('Digitou Token. Porém, Token expirado');
+
                 return redirect(base_url() . 'index.php/mine');
             } else {
                 if ($token) {
@@ -99,6 +104,7 @@ class Mine extends CI_Controller
                         $session_mine_data = $cliente->nomeCliente ? ['nome' => $cliente->nomeCliente] : ['nome' => 'Inexistente'];
                         $this->session->set_userdata($session_mine_data);
                         log_info('Digitou Token. Porém, os dados de acesso estão incorretos.');
+
                         return $this->load->view('conecte/token_digita');
                     } else {
                         if ($token->email == $cliente->email && $token->token_utilizado == false) {
@@ -108,6 +114,7 @@ class Mine extends CI_Controller
                             $session_mine_data = $cliente->nomeCliente ? ['nome' => $cliente->nomeCliente] : ['nome' => 'Inexistente'];
                             $this->session->set_userdata($session_mine_data);
                             log_info('Digitou Token. Porém, dados divergentes ou Token invalido.');
+
                             return redirect(base_url() . 'index.php/mine');
                         }
                     }
@@ -116,6 +123,7 @@ class Mine extends CI_Controller
                     $session_mine_data = $token->email ? ['nome' => $token->email] : ['nome' => 'Inexistente'];
                     $this->session->set_userdata($session_mine_data);
                     log_info('Digitou Token. Porém, Token invalido.');
+
                     return $this->load->view('conecte/token_digita');
                 }
             }
@@ -126,13 +134,14 @@ class Mine extends CI_Controller
     public function verifyTokenSenha()
     {
         $token = $this->uri->uri_to_assoc(3);
-        $token = $this->check_token($token["token"]);
+        $token = $this->check_token($token['token']);
 
-        if ($token == null || $token == "") {
+        if ($token == null || $token == '') {
             $this->session->set_flashdata(['error' => 'Token invalido']);
             $session_mine_data = $token->email ? ['nome' => $token->email] : ['nome' => 'Inexistente'];
             $this->session->set_userdata($session_mine_data);
             log_info('Acesso via link do email (Token). Porém, Token invalido.');
+
             return $this->load->view('conecte/token_digita');
         } else {
             if ($this->validateDate($token->data_expiracao)) {
@@ -140,6 +149,7 @@ class Mine extends CI_Controller
                 $session_mine_data = $token->email ? ['nome' => $token->email] : ['nome' => 'Inexistente'];
                 $this->session->set_userdata($session_mine_data);
                 log_info('Acesso via link do email (Token). Porém, Token expirado');
+
                 return redirect(base_url() . 'index.php/mine');
             } else {
                 if ($token) {
@@ -148,6 +158,7 @@ class Mine extends CI_Controller
                         $session_mine_data = $cliente->nomeCliente ? ['nome' => $cliente->nomeCliente] : ['nome' => 'Inexistente'];
                         $this->session->set_userdata($session_mine_data);
                         log_info('Acesso via link do email (Token). Porém, dados de acesso estão incorretos.');
+
                         return $this->load->view('conecte/token_digita');
                     } else {
                         if ($token->email == $cliente->email && $token->token_utilizado == false) {
@@ -157,6 +168,7 @@ class Mine extends CI_Controller
                             $session_mine_data = $cliente->nomeCliente ? ['nome' => $cliente->nomeCliente] : ['nome' => 'Inexistente'];
                             $this->session->set_userdata($session_mine_data);
                             log_info('Acesso via link do email (Token). Porém, dados divergentes ou Token invalido.');
+
                             return redirect(base_url() . 'index.php/mine');
                         }
                     }
@@ -165,8 +177,10 @@ class Mine extends CI_Controller
                     $session_mine_data = $token->email ? ['nome' => $token->email] : ['nome' => 'Inexistente'];
                     $this->session->set_userdata($session_mine_data);
                     log_info('Acesso via link do email (Token). Porém, Token invalido.');
+
                     return $this->load->view('conecte/token_digita');
                 }
+
                 return $this->load->view('conecte/nova_senha', $token);
             }
         }
@@ -174,7 +188,7 @@ class Mine extends CI_Controller
 
     public function gerarTokenResetarSenha()
     {
-        if (!$cliente = $this->check_credentials($this->input->post('email'))) {
+        if (! $cliente = $this->check_credentials($this->input->post('email'))) {
             $this->session->set_flashdata(['error' => 'Os dados de acesso estão incorretos.']);
             $session_mine_data = $cliente ? ['nome' => $cliente->nomeCliente] : ['nome' => 'Inexistente'];
             $this->session->set_userdata($session_mine_data);
@@ -186,10 +200,10 @@ class Mine extends CI_Controller
             $data = [
                 'email' => $cliente->email,
                 'token' => random_string('alnum', 32),
-                'data_expiracao' => date("Y-m-d H:i:s"),
+                'data_expiracao' => date('Y-m-d H:i:s'),
             ];
             if ($this->resetSenhas_model->add('resets_de_senha', $data) == true) {
-                $this->enviarRecuperarSenha($cliente->idClientes, $cliente->email, "Recuperar Senha", json_encode($data));
+                $this->enviarRecuperarSenha($cliente->idClientes, $cliente->email, 'Recuperar Senha', json_encode($data));
                 $session_mine_data = ['nome' => $cliente->nomeCliente];
                 $this->session->set_userdata($session_mine_data);
                 log_info('Cliente solicitou alteração de senha.');
@@ -225,22 +239,41 @@ class Mine extends CI_Controller
             if ($cliente) {
                 // Verificar credenciais do usuário
                 if (password_verify($password, $cliente->senha)) {
-                    $session_mine_data = ['nome' => $cliente->nomeCliente, 'cliente_id' => $cliente->idClientes, 'email' => $cliente->email, 'conectado' => true, 'isCliente' => true];
+                    $session_mine_data = [
+                        'nome' => $cliente->nomeCliente, 
+                        'cliente_id' => $cliente->idClientes, 
+                        'email' => $cliente->email, 
+                        'conectado' => true, 
+                        'isCliente' => true
+                    ];
                     $this->session->set_userdata($session_mine_data);
                     log_info($_SERVER['REMOTE_ADDR'] . ' Efetuou login no sistema');
+
+                    // Registrar login na auditoria
+                    $this->load->model('Audit_model');
+                    $log_data = [
+                        'usuario' => $cliente->nomeCliente,
+                        'tarefa' => 'Cliente ' . $cliente->nomeCliente . ' efetuou login',
+                        'data' => date('Y-m-d'),
+                        'hora' => date('H:i:s'),
+                        'ip' => $_SERVER['REMOTE_ADDR']
+                    ];
+
+                    $this->Audit_model->add($log_data);
+
                     echo json_encode(['result' => true]);
                 } else {
-                    echo json_encode(['result' => false, 'message' => 'Os dados de acesso estão incorretos.']);
+                    echo json_encode(['result' => false, 'message' => 'Os dados de acesso estão incorretos.', 'MAPOS_TOKEN' => $this->security->get_csrf_hash()]);
                 }
             } else {
-                echo json_encode(['result' => false, 'message' => 'Usuário não encontrado, verifique se suas credenciais estão corretass.']);
+                echo json_encode(['result' => false, 'message' => 'Usuário não encontrado, verifique se suas credenciais estão corretas.', 'MAPOS_TOKEN' => $this->security->get_csrf_hash()]);
             }
         }
     }
 
     public function painel()
     {
-        if (!session_id() || !$this->session->userdata('conectado')) {
+        if (! session_id() || ! $this->session->userdata('conectado')) {
             redirect('mine');
         }
 
@@ -253,7 +286,7 @@ class Mine extends CI_Controller
 
     public function conta()
     {
-        if (!session_id() || !$this->session->userdata('conectado')) {
+        if (! session_id() || ! $this->session->userdata('conectado')) {
             redirect('mine');
         }
 
@@ -266,7 +299,7 @@ class Mine extends CI_Controller
 
     public function editarDados()
     {
-        if (!session_id() || !$this->session->userdata('conectado')) {
+        if (! session_id() || ! $this->session->userdata('conectado')) {
             redirect('mine');
         }
 
@@ -328,7 +361,7 @@ class Mine extends CI_Controller
 
     public function compras()
     {
-        if (!session_id() || !$this->session->userdata('conectado')) {
+        if (! session_id() || ! $this->session->userdata('conectado')) {
             redirect('mine');
         }
 
@@ -367,7 +400,7 @@ class Mine extends CI_Controller
 
     public function cobrancas()
     {
-        if (!session_id() || !$this->session->userdata('conectado')) {
+        if (! session_id() || ! $this->session->userdata('conectado')) {
             redirect('mine');
         }
 
@@ -408,16 +441,16 @@ class Mine extends CI_Controller
 
     public function atualizarcobranca($id = null)
     {
-        if (!session_id() || !$this->session->userdata('conectado')) {
+        if (! session_id() || ! $this->session->userdata('conectado')) {
             redirect('mine');
         }
 
-        if (!$this->uri->segment(3) || !is_numeric($this->uri->segment(3))) {
+        if (! $this->uri->segment(3) || ! is_numeric($this->uri->segment(3))) {
             $this->session->set_flashdata('error', 'Item não pode ser encontrado, parâmetro não foi passado corretamente.');
             redirect('mapos');
         }
 
-        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'eCobranca')) {
+        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'eCobranca')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para atualizar cobrança.');
             redirect(base_url());
         }
@@ -430,16 +463,16 @@ class Mine extends CI_Controller
 
     public function enviarcobranca()
     {
-        if (!session_id() || !$this->session->userdata('conectado')) {
+        if (! session_id() || ! $this->session->userdata('conectado')) {
             redirect('mine');
         }
 
-        if (!$this->uri->segment(3) || !is_numeric($this->uri->segment(3))) {
+        if (! $this->uri->segment(3) || ! is_numeric($this->uri->segment(3))) {
             $this->session->set_flashdata('error', 'Item não pode ser encontrado, parâmetro não foi passado corretamente.');
             redirect('mapos');
         }
 
-        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'eCobranca')) {
+        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'eCobranca')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para atualizar cobrança.');
             redirect(base_url());
         }
@@ -453,7 +486,7 @@ class Mine extends CI_Controller
 
     public function os()
     {
-        if (!session_id() || !$this->session->userdata('conectado')) {
+        if (! session_id() || ! $this->session->userdata('conectado')) {
             redirect('mine');
         }
 
@@ -492,7 +525,7 @@ class Mine extends CI_Controller
 
     public function visualizarOs($id = null)
     {
-        if (!session_id() || !$this->session->userdata('conectado')) {
+        if (! session_id() || ! $this->session->userdata('conectado')) {
             redirect('mine');
         }
 
@@ -500,11 +533,21 @@ class Mine extends CI_Controller
         $this->data['custom_error'] = '';
         $this->load->model('mapos_model');
         $this->load->model('os_model');
+        $this->CI = &get_instance();
+        $this->CI->load->database();
 
+        $data['pix_key'] = $this->CI->db->get_where('configuracoes', ['config' => 'pix_key'])->row_object()->valor;
         $data['result'] = $this->os_model->getById($this->uri->segment(3));
         $data['produtos'] = $this->os_model->getProdutos($this->uri->segment(3));
         $data['servicos'] = $this->os_model->getServicos($this->uri->segment(3));
+        $data['anexos'] = $this->os_model->getAnexos($this->uri->segment(3));
         $data['emitente'] = $this->mapos_model->getEmitente();
+        $data['qrCode'] = $this->os_model->getQrCode(
+            $id,
+            $data['pix_key'],
+            $data['emitente']
+        );
+        $data['chaveFormatada'] = $this->formatarChave($data['pix_key']);
 
         if ($data['result']->idClientes != $this->session->userdata('cliente_id')) {
             $this->session->set_flashdata('error', 'Esta OS não pertence ao cliente logado.');
@@ -515,23 +558,84 @@ class Mine extends CI_Controller
         $this->load->view('conecte/template', $data);
     }
 
+    public function validarCPF($cpf)
+    {
+        $cpf = preg_replace('/[^0-9]/', '', $cpf);
+        if (strlen($cpf) !== 11 || preg_match('/^(\d)\1+$/', $cpf)) {
+            return false;
+        }
+        $soma1 = 0;
+        for ($i = 0; $i < 9; $i++) {
+            $soma1 += $cpf[$i] * (10 - $i);
+        }
+        $resto1 = $soma1 % 11;
+        $dv1 = ($resto1 < 2) ? 0 : 11 - $resto1;
+        if ($dv1 != $cpf[9]) {
+            return false;
+        }
+        $soma2 = 0;
+        for ($i = 0; $i < 10; $i++) {
+            $soma2 += $cpf[$i] * (11 - $i);
+        }
+        $resto2 = $soma2 % 11;
+        $dv2 = ($resto2 < 2) ? 0 : 11 - $resto2;
+
+        return $dv2 == $cpf[10];
+    }
+
+    public function validarCNPJ($cnpj)
+    {
+        $cnpj = preg_replace('/[^0-9]/', '', $cnpj);
+        if (strlen($cnpj) !== 14 || preg_match('/^(\d)\1+$/', $cnpj)) {
+            return false;
+        }
+        $soma1 = 0;
+        for ($i = 0, $pos = 5; $i < 12; $i++, $pos--) {
+            $pos = ($pos < 2) ? 9 : $pos;
+            $soma1 += $cnpj[$i] * $pos;
+        }
+        $dv1 = ($soma1 % 11 < 2) ? 0 : 11 - ($soma1 % 11);
+        if ($dv1 != $cnpj[12]) {
+            return false;
+        }
+        $soma2 = 0;
+        for ($i = 0, $pos = 6; $i < 13; $i++, $pos--) {
+            $pos = ($pos < 2) ? 9 : $pos;
+            $soma2 += $cnpj[$i] * $pos;
+        }
+        $dv2 = ($soma2 % 11 < 2) ? 0 : 11 - ($soma2 % 11);
+
+        return $dv2 == $cnpj[13];
+    }
+
+    public function formatarChave($chave)
+    {
+        if ($this->validarCPF($chave)) {
+            return substr($chave, 0, 3) . '.' . substr($chave, 3, 3) . '.' . substr($chave, 6, 3) . '-' . substr($chave, 9);
+        } elseif ($this->validarCNPJ($chave)) {
+            return substr($chave, 0, 2) . '.' . substr($chave, 2, 3) . '.' . substr($chave, 5, 3) . '/' . substr($chave, 8, 4) . '-' . substr($chave, 12);
+        } elseif (strlen($chave) === 11) {
+            return '(' . substr($chave, 0, 2) . ') ' . substr($chave, 2, 5) . '-' . substr($chave, 7);
+        }
+
+        return $chave;
+    }
+
     public function gerarPagamentoGerencianetBoleto()
     {
         print_r(json_encode(['code' => 4001, 'error' => 'Erro interno', 'errorDescription' => 'Cobrança não pode ser gerada pelo lado do cliente']));
 
-        return;
     }
 
     public function gerarPagamentoGerencianetLink()
     {
         print_r(json_encode(['code' => 4001, 'error' => 'Erro interno', 'errorDescription' => 'Cobrança não pode ser gerada pelo lado do cliente']));
 
-        return;
     }
 
     public function imprimirOs($id = null)
     {
-        if (!session_id() || !$this->session->userdata('conectado')) {
+        if (! session_id() || ! $this->session->userdata('conectado')) {
             redirect('mine');
         }
 
@@ -554,15 +658,28 @@ class Mine extends CI_Controller
 
     public function visualizarCompra($id = null)
     {
-        if (!session_id() || !$this->session->userdata('conectado')) {
+        if (! session_id() || ! $this->session->userdata('conectado')) {
             redirect('mine');
         }
 
         $data['menuVendas'] = 'vendas';
         $data['custom_error'] = '';
+        $this->CI = &get_instance();
+        $this->CI->load->database();
+        
+        
         $this->load->model('mapos_model');
+        $this->load->model('os_model');
+        $data['pix_key'] = $this->CI->db->get_where('configuracoes', ['config' => 'pix_key'])->row_object()->valor;
+        $data['emitente'] = $this->mapos_model->getEmitente();
+        $data['qrCode'] = $this->os_model->getQrCode(
+            $id,
+            $data['pix_key'],
+            $data['emitente']
+        );
+        $data['chaveFormatada'] = $this->formatarChave($data['pix_key']);
+        
         $this->load->model('vendas_model');
-
         $data['result'] = $this->vendas_model->getById($this->uri->segment(3));
         $data['produtos'] = $this->vendas_model->getProdutos($this->uri->segment(3));
         $data['emitente'] = $this->mapos_model->getEmitente();
@@ -579,17 +696,27 @@ class Mine extends CI_Controller
 
     public function imprimirCompra($id = null)
     {
-        if (!session_id() || !$this->session->userdata('conectado')) {
+        if (! session_id() || ! $this->session->userdata('conectado')) {
             redirect('mine');
         }
 
         $data['menuVendas'] = 'vendas';
         $data['custom_error'] = '';
+        $this->CI = &get_instance();
+        $this->CI->load->database();
         $this->load->model('mapos_model');
         $this->load->model('vendas_model');
+        $this->load->model('os_model');
         $data['result'] = $this->vendas_model->getById($this->uri->segment(3));
         $data['produtos'] = $this->vendas_model->getProdutos($this->uri->segment(3));
         $data['emitente'] = $this->mapos_model->getEmitente();
+        $data['pix_key'] = $this->CI->db->get_where('configuracoes', ['config' => 'pix_key'])->row_object()->valor;
+        $data['qrCode'] = $this->os_model->getQrCode(
+            $id,
+            $data['pix_key'],
+            $data['emitente']
+        );
+        $data['chaveFormatada'] = $this->formatarChave($data['pix_key']);
 
         if ($data['result']->clientes_id != $this->session->userdata('cliente_id')) {
             $this->session->set_flashdata('error', 'Esta OS não pertence ao cliente logado.');
@@ -635,6 +762,9 @@ class Mine extends CI_Controller
     // Cadastro de OS pelo cliente
     public function adicionarOs()
     {
+        if (! session_id() || ! $this->session->userdata('conectado')) {
+            redirect('mine');
+        }
         $this->load->library('form_validation');
 
         $this->form_validation->set_rules('descricaoProduto', 'Descrição', 'required');
@@ -666,10 +796,10 @@ class Mine extends CI_Controller
                 'clientes_id' => $this->session->userdata('cliente_id'), //set_value('idCliente'),
                 'usuarios_id' => $id, //set_value('idUsuario'),
                 'dataFinal' => date('Y-m-d'),
-                'descricaoProduto' => $this->input->post('descricaoProduto'),
-                'defeito' => $this->input->post('defeito'),
+                'descricaoProduto' => $this->security->xss_clean($this->input->post('descricaoProduto')),
+                'defeito' => $this->security->xss_clean($this->input->post('defeito')),
                 'status' => 'Aberto',
-                'observacoes' => set_value('observacoes'),
+                'observacoes' => $this->security->xss_clean(set_value('observacoes')),
                 'faturado' => 0,
             ];
 
@@ -719,7 +849,7 @@ class Mine extends CI_Controller
             $this->data['output'] = 'conecte/detalhes_os';
             $this->load->view('conecte/template', $this->data);
         } else {
-            echo "teste";
+            echo 'teste';
         }
     }
 
@@ -733,6 +863,8 @@ class Mine extends CI_Controller
 
         if ($this->form_validation->run('clientes') == false) {
             $this->data['custom_error'] = (validation_errors() ? '<div class="form_error">' . validation_errors() . '</div>' : false);
+        } elseif (strtolower($this->input->post('captcha')) != strtolower($this->session->userdata('captchaWord'))) {
+            $this->session->set_flashdata('error', 'Os caracteres da imagem não foram preenchidos corretamente!');
         } else {
             $data = [
                 'nomeCliente' => set_value('nomeCliente'),
@@ -762,12 +894,15 @@ class Mine extends CI_Controller
                 $this->session->set_flashdata('error', 'Falha ao realizar cadastro!');
             }
         }
-        $data = '';
-        $this->load->view('conecte/cadastrar', $data);
+
+        $this->load->view('conecte/cadastrar', $this->data);
     }
 
     public function downloadanexo($id = null)
     {
+        if (! session_id() || ! $this->session->userdata('conectado')) {
+            redirect('mine');
+        }
         if ($id != null && is_numeric($id)) {
             $this->db->where('idAnexos', $id);
             $file = $this->db->get('anexos', 1)->row();
@@ -783,6 +918,7 @@ class Mine extends CI_Controller
     {
         $this->db->where('email', $email);
         $this->db->limit(1);
+
         return $this->db->get('clientes')->row();
     }
 
@@ -790,13 +926,14 @@ class Mine extends CI_Controller
     {
         $this->db->where('token', $token);
         $this->db->limit(1);
+
         return $this->db->get('resets_de_senha')->row();
     }
 
     private function validateDate($date, $format = 'Y-m-d H:i:s')
     {
         $dateStart = new \DateTime($date);
-        $dateNow   = new \DateTime(date($format));
+        $dateNow = new \DateTime(date($format));
 
         $dateDiff = $dateStart->diff($dateNow);
 
@@ -823,16 +960,17 @@ class Mine extends CI_Controller
         $html = $this->load->view('conecte/emails/clientenovasenha', $dados, true);
 
         $this->load->model('email_model');
-        
+
         if ($emitente == null) {
             $this->session->set_flashdata(['error' => 'Cadastrar Emitente.\n\n Por favor contate o administrador do sistema.']);
+
             return redirect(base_url() . 'index.php/mine/resetarSenha');
         }
 
         $headers = [
             'From' => "\"$emitente->nome\" <$emitente->email>",
             'Subject' => $assunto,
-            'Return-Path' => ''
+            'Return-Path' => '',
         ];
         $email = [
             'to' => $remetente,
@@ -852,7 +990,7 @@ class Mine extends CI_Controller
         $this->load->model('mapos_model');
         $this->load->model('os_model');
         $dados['result'] = $this->os_model->getById($idOs);
-        if (!isset($dados['result']->email)) {
+        if (! isset($dados['result']->email)) {
             return false;
         }
 
@@ -861,7 +999,7 @@ class Mine extends CI_Controller
         $dados['emitente'] = $this->mapos_model->getEmitente();
 
         $emitente = $dados['emitente'];
-        if (!isset($emitente)) {
+        if (! isset($emitente)) {
             return false;
         }
 
@@ -874,7 +1012,7 @@ class Mine extends CI_Controller
             $headers = [
                 'From' => $emitente->email,
                 'Subject' => $assunto,
-                'Return-Path' => ''
+                'Return-Path' => '',
             ];
             $email = [
                 'to' => $remetente,
@@ -909,7 +1047,7 @@ class Mine extends CI_Controller
         $headers = [
             'From' => "\"$emitente->nome\" <$emitente->email>",
             'Subject' => $assunto,
-            'Return-Path' => ''
+            'Return-Path' => '',
         ];
         $email = [
             'to' => $remetente->email,
@@ -944,7 +1082,7 @@ class Mine extends CI_Controller
             $headers = [
                 'From' => "\"$emitente->nome\" <$emitente->email>",
                 'Subject' => $assunto,
-                'Return-Path' => ''
+                'Return-Path' => '',
             ];
             $email = [
                 'to' => $usuario->email,
@@ -955,6 +1093,25 @@ class Mine extends CI_Controller
             ];
             $this->email_model->add('email_queue', $email);
         }
+    }
+
+    public function captcha()
+    {
+        header('Content-type: image/jpeg');
+
+        $arrFont = ['font-ZXX_Noise.otf', 'font-karabine.ttf', 'font-capture.ttf', 'font-captcha.ttf'];
+        shuffle($arrFont);
+
+        $codigoCaptcha = substr(md5(time()), 0, 7);
+        $img = imagecreatefromjpeg('./assets/img/captcha_bg.jpg');
+        $corCaptcha = imagecolorallocate($img, 255, 0, 0);
+        $font = './assets/font-awesome/' . $arrFont[0];
+
+        imagettftext($img, 23, 0, 5, rand(30, 35), $corCaptcha, $font, $codigoCaptcha);
+        imagepng($img);
+        imagedestroy($img);
+
+        $this->session->set_userdata('captchaWord', $codigoCaptcha);
     }
 }
 
