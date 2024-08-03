@@ -2,7 +2,7 @@
 
 use Piggly\Pix\Parser;
 
-if (! function_exists('multiplica_cnpj')) {
+if (!function_exists('multiplica_cnpj')) {
     function multiplica_cnpj($cnpj, $posicao = 5)
     {
         // Variável para o cálculo
@@ -21,13 +21,12 @@ if (! function_exists('multiplica_cnpj')) {
                 $posicao = 9;
             }
         }
-
         // Retorna o cálculo
         return $calculo;
     }
 }
 
-if (! function_exists('valid_cnpj')) {
+if (!function_exists('valid_cnpj')) {
     function valid_cnpj($cnpj)
     {
         // Deixa o CNPJ com apenas números
@@ -69,7 +68,7 @@ if (! function_exists('valid_cnpj')) {
     }
 }
 
-if (! function_exists('valid_cpf')) {
+if (!function_exists('valid_cpf')) {
     function valid_cpf($cpf)
     {
         // Extrai somente os números
@@ -95,12 +94,11 @@ if (! function_exists('valid_cpf')) {
                 return false;
             }
         }
-
         return true;
     }
 }
 
-if (! function_exists('verific_cpf_cnpj')) {
+if (!function_exists('verific_cpf_cnpj')) {
     function verific_cpf_cnpj($cpfCnpjValor)
     {
         $cpfCnpj = preg_replace('/[^0-9]/', '', $cpfCnpjValor);
@@ -118,15 +116,15 @@ if (! function_exists('verific_cpf_cnpj')) {
     }
 }
 
-if (! function_exists('unique')) {
+if (!function_exists('unique')) {
     function unique($value, $params)
     {
         $CI = &get_instance();
         $CI->load->database();
 
-        $CI->form_validation->set_message('unique', 'O campo %s já está cadastrado.');
+        $CI->form_validation->set_message('unique', "O campo %s já está cadastrado.");
 
-        [$table, $field, $current_id, $key] = explode('.', $params);
+        list($table, $field, $current_id, $key) = explode(".", $params);
 
         $query = $CI->db->select()->from($table)->where($field, $value)->limit(1)->get();
 
@@ -138,7 +136,7 @@ if (! function_exists('unique')) {
     }
 }
 
-if (! function_exists('valid_pix_key')) {
+if (!function_exists('valid_pix_key')) {
     function valid_pix_key($value)
     {
         if (Parser::validateDocument($value)) {

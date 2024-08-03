@@ -4,12 +4,18 @@ use PhpOffice\PhpWord\IOFactory;
 use PhpOffice\PhpWord\Settings;
 use PhpOffice\PhpWord\TemplateProcessor;
 
-if (! defined('BASEPATH')) {
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
 class Relatorios extends MY_Controller
 {
+    /**
+     * author: Ramon Silva
+     * email: silva018-mg@yahoo.com.br
+     *
+     */
+
     public function __construct()
     {
         parent::__construct();
@@ -28,29 +34,27 @@ class Relatorios extends MY_Controller
 
     public function clientes()
     {
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'rCliente')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'rCliente')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para gerar relatórios de clientes.');
             redirect(base_url());
         }
         $this->data['view'] = 'relatorios/rel_clientes';
-
         return $this->layout();
     }
 
     public function produtos()
     {
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'rProduto')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'rProduto')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para gerar relatórios de produtos.');
             redirect(base_url());
         }
         $this->data['view'] = 'relatorios/rel_produtos';
-
         return $this->layout();
     }
 
     public function clientesCustom()
     {
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'rCliente')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'rCliente')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para gerar relatórios de clientes.');
             redirect(base_url());
         }
@@ -73,7 +77,7 @@ class Relatorios extends MY_Controller
 
     public function clientesRapid()
     {
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'rCliente')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'rCliente')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para gerar relatórios de clientes.');
             redirect(base_url());
         }
@@ -107,15 +111,15 @@ class Relatorios extends MY_Controller
 
             $writer->writeSheetHeader('Sheet1', $cabecalho);
             foreach ($clientes as $cliente) {
-                if ($cliente['fornecedor']) {
-                    $cliente['fornecedor'] = 'sim';
+                if ($cliente["fornecedor"]) {
+                    $cliente["fornecedor"] = "sim";
                 } else {
-                    $cliente['fornecedor'] = 'não';
+                    $cliente["fornecedor"] = "não";
                 }
-                if ($cliente['pessoa_fisica']) {
-                    $cliente['pessoa_fisica'] = 'sim';
+                if ($cliente["pessoa_fisica"]) {
+                    $cliente["pessoa_fisica"] = "sim";
                 } else {
-                    $cliente['pessoa_fisica'] = 'não';
+                    $cliente["pessoa_fisica"] = "não";
                 }
                 $writer->writeSheetRow('Sheet1', $cliente);
             }
@@ -123,7 +127,6 @@ class Relatorios extends MY_Controller
             $arquivo = $writer->writeToString();
             $this->load->helper('download');
             force_download('relatorio_clientes.xlsx', $arquivo);
-
             return;
         }
 
@@ -140,7 +143,7 @@ class Relatorios extends MY_Controller
 
     public function produtosRapid()
     {
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'rProduto')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'rProduto')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para gerar relatórios de produtos.');
             redirect(base_url());
         }
@@ -157,7 +160,7 @@ class Relatorios extends MY_Controller
 
     public function produtosRapidMin()
     {
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'rProduto')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'rProduto')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para gerar relatórios de produtos.');
             redirect(base_url());
         }
@@ -174,7 +177,7 @@ class Relatorios extends MY_Controller
 
     public function produtosCustom()
     {
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'rProduto')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'rProduto')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para gerar relatórios de produtos.');
             redirect(base_url());
         }
@@ -216,20 +219,19 @@ class Relatorios extends MY_Controller
 
     public function sku()
     {
-        if (! ($this->permission->checkPermission($this->session->userdata('permissao'), 'rVenda')
+        if (!($this->permission->checkPermission($this->session->userdata('permissao'), 'rVenda')
             && $this->permission->checkPermission($this->session->userdata('permissao'), 'rOs'))) {
             $this->session->set_flashdata('error', 'Você não tem permissão para gerar relatório SKU.');
             redirect(base_url());
         }
 
         $this->data['view'] = 'relatorios/rel_sku';
-
         return $this->layout();
     }
 
     public function skuRapid()
     {
-        if (! ($this->permission->checkPermission($this->session->userdata('permissao'), 'rVenda')
+        if (!($this->permission->checkPermission($this->session->userdata('permissao'), 'rVenda')
             && $this->permission->checkPermission($this->session->userdata('permissao'), 'rOs'))) {
             $this->session->set_flashdata('error', 'Você não tem permissão para gerar relatório SKU.');
             redirect(base_url());
@@ -250,7 +252,7 @@ class Relatorios extends MY_Controller
                 'Data' => 'YYYY-MM-DD',
                 'Preço Unitário' => 'price',
                 'Preço Total' => 'price',
-                'Origem' => 'string',
+                'Origem' => 'string'
             ];
 
             $writer = new XLSXWriter();
@@ -279,7 +281,7 @@ class Relatorios extends MY_Controller
 
     public function skuCustom()
     {
-        if (! ($this->permission->checkPermission($this->session->userdata('permissao'), 'rVenda')
+        if (!($this->permission->checkPermission($this->session->userdata('permissao'), 'rVenda')
             && $this->permission->checkPermission($this->session->userdata('permissao'), 'rOs'))) {
             $this->session->set_flashdata('error', 'Você não tem permissão para gerar relatório SKU.');
             redirect(base_url());
@@ -304,7 +306,7 @@ class Relatorios extends MY_Controller
                 'Data' => 'YYYY-MM-DD',
                 'Preço Unitário' => 'price',
                 'Preço Total' => 'price',
-                'Origem' => 'string',
+                'Origem' => 'string'
             ];
 
             $writer = new XLSXWriter();
@@ -333,18 +335,17 @@ class Relatorios extends MY_Controller
 
     public function servicos()
     {
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'rServico')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'rServico')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para gerar relatórios de serviços.');
             redirect(base_url());
         }
         $this->data['view'] = 'relatorios/rel_servicos';
-
         return $this->layout();
     }
 
     public function servicosCustom()
     {
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'rServico')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'rServico')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para gerar relatórios de serviços.');
             redirect(base_url());
         }
@@ -364,7 +365,7 @@ class Relatorios extends MY_Controller
 
     public function servicosRapid()
     {
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'rServico')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'rServico')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para gerar relatórios de serviços.');
             redirect(base_url());
         }
@@ -381,18 +382,17 @@ class Relatorios extends MY_Controller
 
     public function os()
     {
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'rOs')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'rOs')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para gerar relatórios de OS.');
             redirect(base_url());
         }
         $this->data['view'] = 'relatorios/rel_os';
-
         return $this->layout();
     }
 
     public function osRapid()
     {
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'rOs')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'rOs')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para gerar relatórios de OS.');
             redirect(base_url());
         }
@@ -419,11 +419,11 @@ class Relatorios extends MY_Controller
 
             $isXls
                 ?
-                $totalValorDesconto += $o['valor_desconto'] != 0
+                $totalValorDesconto += $o['valor_desconto']
                 ? floatval($o['valor_desconto'])
                 : floatval($o['total_servico']) + floatval($o['total_produto'])
                 :
-                $totalValorDesconto += $o->valor_desconto != 0
+                $totalValorDesconto += $o->valor_desconto
                 ? floatval($o->valor_desconto)
                 : floatval($o->total_produto) + floatval($o->total_servico);
         }
@@ -444,7 +444,7 @@ class Relatorios extends MY_Controller
                     'valorSubTotal' => $subTotal ? $subTotal : 0,
                     'valorTotal' => $total ? $total : 0,
                     'total_geral_desconto' => $item['desconto'] ?: 0,
-                    'tipo_desconto' => $item['tipo_desconto'] ?: '-',
+                    'tipo_desconto' => $item['tipo_desconto'] ?: "-",
                 ];
             }, $os);
 
@@ -504,7 +504,7 @@ class Relatorios extends MY_Controller
 
     public function osCustom()
     {
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'rOs')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'rOs')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para gerar relatórios de OS.');
             redirect(base_url());
         }
@@ -535,13 +535,9 @@ class Relatorios extends MY_Controller
                 : floatval($o->desconto);
             $isXls
                 ?
-                $totalValorDesconto += $o['valor_desconto'] != 0
-                ? floatval($o['valor_desconto'])
-                : floatval($o['total_servico']) + floatval($o['total_produto'])
+                $totalValorDesconto += $o['valor_desconto'] ? floatval($o['valor_desconto']) : floatval($o['total_servico']) + floatval($o['total_produto'])
                 :
-                $totalValorDesconto += $o->valor_desconto != 0
-                ? floatval($o->valor_desconto)
-                : floatval($o->total_produto) + floatval($o->total_servico);
+                $totalValorDesconto += $o->valor_desconto ? floatval($o->valor_desconto) : floatval($o->total_produto) + floatval($o->total_servico);
         }
 
         if ($isXls) {
@@ -559,8 +555,8 @@ class Relatorios extends MY_Controller
                     'total_servico' => $item['total_servico'] ? $item['total_servico'] : 0,
                     'valorSubTotal' => $subTotal ? $subTotal : 0,
                     'valorTotal' => $total ? $total : 0,
-                    'total_geral_desconto' => $item['desconto'] ?: 0,
-                    'tipo_desconto' => $item['tipo_desconto'] ?: '-',
+                    'valorSubTotal' => $subTotal ? $subTotal : 0,
+                    'tipo_desconto' => $item['tipo_desconto'] ?: "-",
                 ];
             }, $os);
 
@@ -631,19 +627,18 @@ class Relatorios extends MY_Controller
 
     public function financeiro()
     {
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'rFinanceiro')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'rFinanceiro')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para gerar relatórios financeiros.');
             redirect(base_url());
         }
 
         $this->data['view'] = 'relatorios/rel_financeiro';
-
         return $this->layout();
     }
 
     public function financeiroRapid()
     {
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'rFinanceiro')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'rFinanceiro')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para gerar relatórios financeiros.');
             redirect(base_url());
         }
@@ -711,7 +706,7 @@ class Relatorios extends MY_Controller
 
     public function financeiroCustom()
     {
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'rFinanceiro')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'rFinanceiro')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para gerar relatórios financeiros.');
             redirect(base_url());
         }
@@ -783,19 +778,18 @@ class Relatorios extends MY_Controller
 
     public function vendas()
     {
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'rVenda')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'rVenda')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para gerar relatórios de vendas.');
             redirect(base_url());
         }
 
         $this->data['view'] = 'relatorios/rel_vendas';
-
         return $this->layout();
     }
 
     public function vendasRapid()
     {
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'rVenda')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'rVenda')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para gerar relatórios de vendas.');
             redirect(base_url());
         }
@@ -887,7 +881,7 @@ class Relatorios extends MY_Controller
 
     public function vendasCustom()
     {
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'rVenda')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'rVenda')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para gerar relatórios de vendas.');
             redirect(base_url());
         }
@@ -979,7 +973,7 @@ class Relatorios extends MY_Controller
 
     public function receitasBrutasMei()
     {
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'rFinanceiro')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'rFinanceiro')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para gerar relatórios financeiros.');
             redirect(base_url());
         }
@@ -991,7 +985,7 @@ class Relatorios extends MY_Controller
 
     public function receitasBrutasRapid()
     {
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'rFinanceiro')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'rFinanceiro')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para gerar relatórios financeiros.');
             redirect(base_url());
         }
@@ -1001,15 +995,15 @@ class Relatorios extends MY_Controller
 
         $format = $this->input->get('format') ?: 'docx';
 
-        $templatePath = realpath(FCPATH . 'assets/relatorios/RELATORIO_MENSAL_DAS_RECEITAS_BRUTAS_MEI.docx');
-        if (! $templatePath) {
+        $templatePath = realpath(FCPATH . "assets/relatorios/RELATORIO_MENSAL_DAS_RECEITAS_BRUTAS_MEI.docx");
+        if (!$templatePath) {
             $this->session->set_flashdata('error', 'Modelo de relatório não encontrado!');
 
             return redirect('/relatorios/receitasBrutasMei');
         }
 
-        $tempFilePath = FCPATH . 'assets' . DIRECTORY_SEPARATOR . 'relatorios' . DIRECTORY_SEPARATOR . 'temp.docx';
-        $generatedFilePath = FCPATH . 'assets' . DIRECTORY_SEPARATOR . 'relatorios' . DIRECTORY_SEPARATOR . "RELATORIO_MENSAL_DAS_RECEITAS_BRUTAS_MEI_GERADO.$format";
+        $tempFilePath = FCPATH . "assets" . DIRECTORY_SEPARATOR . "relatorios" . DIRECTORY_SEPARATOR . "temp.docx";
+        $generatedFilePath = FCPATH . "assets" . DIRECTORY_SEPARATOR . "relatorios" . DIRECTORY_SEPARATOR . "RELATORIO_MENSAL_DAS_RECEITAS_BRUTAS_MEI_GERADO.$format";
 
         $templateProcessor = new TemplateProcessor($templatePath);
         $data = $this->Relatorios_model->receitasBrutasRapid();
@@ -1036,7 +1030,7 @@ class Relatorios extends MY_Controller
             unlink($generatedFilePath);
 
             return $this->output
-                ->set_header('Content-disposition: inline;filename=' . "relatorio_receitas_brutas_mei_rapido.$format")
+                ->set_header("Content-disposition: inline;filename=" . "relatorio_receitas_brutas_mei_rapido.$format")
                 ->set_content_type(get_mime_by_extension($generatedFilePath))
                 ->set_status_header(200)
                 ->set_output($fileContents)
@@ -1046,7 +1040,7 @@ class Relatorios extends MY_Controller
 
     public function receitasBrutasCustom()
     {
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'rFinanceiro')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'rFinanceiro')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para gerar relatórios financeiros.');
             redirect(base_url());
         }
@@ -1058,15 +1052,15 @@ class Relatorios extends MY_Controller
         $dataInicial = $this->input->get('dataInicial');
         $dataFinal = $this->input->get('dataFinal');
 
-        $templatePath = realpath(FCPATH . 'assets/relatorios/RELATORIO_MENSAL_DAS_RECEITAS_BRUTAS_MEI.docx');
-        if (! $templatePath) {
+        $templatePath = realpath(FCPATH . "assets/relatorios/RELATORIO_MENSAL_DAS_RECEITAS_BRUTAS_MEI.docx");
+        if (!$templatePath) {
             $this->session->set_flashdata('error', 'Modelo de relatório não encontrado!');
 
             return redirect('/relatorios/receitasBrutasMei');
         }
 
-        $tempFilePath = FCPATH . 'assets' . DIRECTORY_SEPARATOR . 'relatorios' . DIRECTORY_SEPARATOR . 'temp.docx';
-        $generatedFilePath = FCPATH . 'assets' . DIRECTORY_SEPARATOR . 'relatorios' . DIRECTORY_SEPARATOR . "RELATORIO_MENSAL_DAS_RECEITAS_BRUTAS_MEI_GERADO.$format";
+        $tempFilePath = FCPATH . "assets" . DIRECTORY_SEPARATOR . "relatorios" . DIRECTORY_SEPARATOR . "temp.docx";
+        $generatedFilePath = FCPATH . "assets" . DIRECTORY_SEPARATOR . "relatorios" . DIRECTORY_SEPARATOR . "RELATORIO_MENSAL_DAS_RECEITAS_BRUTAS_MEI_GERADO.$format";
 
         $templateProcessor = new TemplateProcessor($templatePath);
         $data = $this->Relatorios_model->receitasBrutasCustom($dataInicial, $dataFinal);
@@ -1100,7 +1094,7 @@ class Relatorios extends MY_Controller
             unlink($generatedFilePath);
 
             return $this->output
-                ->set_header('Content-disposition: inline;filename=' . "relatorio_receitas_brutas_mei_custom_%s_até_%s.$format")
+                ->set_header("Content-disposition: inline;filename=" . "relatorio_receitas_brutas_mei_custom_%s_até_%s.$format")
                 ->set_content_type(get_mime_by_extension($generatedFilePath))
                 ->set_status_header(200)
                 ->set_output($fileContents)

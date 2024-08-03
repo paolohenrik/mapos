@@ -1,6 +1,4 @@
-<?php
-
-defined('BASEPATH') or exit('No direct script access allowed');
+<?php defined('BASEPATH') or exit('No direct script access allowed');
 
 class Auditoria extends MY_Controller
 {
@@ -8,7 +6,7 @@ class Auditoria extends MY_Controller
     {
         parent::__construct();
 
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'cAuditoria')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'cAuditoria')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para visualizar logs do sistema.');
             redirect(base_url());
         }
@@ -28,7 +26,6 @@ class Auditoria extends MY_Controller
         $this->data['results'] = $this->Audit_model->get('logs', '*', '', $this->data['configuration']['per_page'], $this->uri->segment(3));
 
         $this->data['view'] = 'auditoria/logs';
-
         return $this->layout();
     }
 

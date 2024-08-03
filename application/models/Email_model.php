@@ -1,7 +1,12 @@
 <?php
-
 class Email_model extends CI_Model
 {
+    /**
+     * author: Ramon Silva
+     * email: silva018-mg@yahoo.com.br
+     *
+     */
+
     public function __construct()
     {
         parent::__construct();
@@ -19,8 +24,7 @@ class Email_model extends CI_Model
 
         $query = $this->db->get();
 
-        $result = ! $one ? $query->result() : $query->row();
-
+        $result = !$one ? $query->result() : $query->row();
         return $result;
     }
 
@@ -28,7 +32,6 @@ class Email_model extends CI_Model
     {
         $this->db->where('id', $id);
         $this->db->limit(1);
-
         return $this->db->get('email_queue')->row();
     }
 

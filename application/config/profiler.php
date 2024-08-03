@@ -1,6 +1,4 @@
-<?php
-
-if (! defined('BASEPATH')) {
+<?php  if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 /*
@@ -14,6 +12,8 @@ if (! defined('BASEPATH')) {
 |	http://codeigniter.com/user_guide/general/profiling.html
 |
 */
+
+
 
 /* End of file profiler.php */
 /* Location: ./application/config/profiler.php */
