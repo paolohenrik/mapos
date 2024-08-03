@@ -1,6 +1,4 @@
-<?php
-
-if (! defined('BASEPATH')) {
+<?php if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -17,7 +15,7 @@ class Tools extends CI_Controller
         parent::__construct();
 
         // can only be called from the command line
-        if (! $this->input->is_cli_request()) {
+        if (!$this->input->is_cli_request()) {
             exit('Direct access is not allowed. This is a command line tool, use the terminal');
         }
 
@@ -66,7 +64,7 @@ class Tools extends CI_Controller
             if ($this->migration->version($version) === false) {
                 show_error($this->migration->error_string());
             } else {
-                echo 'Migrations run successfully' . PHP_EOL;
+                echo "Migrations run successfully" . PHP_EOL;
             }
 
             return;
@@ -75,7 +73,7 @@ class Tools extends CI_Controller
         if ($this->migration->latest() === false) {
             show_error($this->migration->error_string());
         } else {
-            echo 'Migrations run successfully' . PHP_EOL;
+            echo "Migrations run successfully" . PHP_EOL;
         }
     }
 
@@ -89,10 +87,11 @@ class Tools extends CI_Controller
         if ($name) {
             $this->seeder->call($name);
 
-            echo 'Seeds run successfully' . PHP_EOL;
+            echo "Seeds run successfully" . PHP_EOL;
 
             return;
         }
+
 
         $seeds = [
             'Permissoes',
@@ -104,7 +103,7 @@ class Tools extends CI_Controller
             $this->seeder->call($seed);
         }
 
-        echo 'Seeds run successfully' . PHP_EOL;
+        echo "Seeds run successfully" . PHP_EOL;
     }
 
     protected function make_migration_file($name)
@@ -112,15 +111,15 @@ class Tools extends CI_Controller
         $date = new DateTime();
         $timestamp = $date->format('YmdHis');
 
-        $path = APPPATH . "database/migrations/$timestamp" . '_' . "$name.php";
+        $path = APPPATH . "database/migrations/$timestamp" . "_" . "$name.php";
 
-        $my_migration = fopen($path, 'w') or exit('Unable to create migration file!');
+        $my_migration = fopen($path, "w") or die("Unable to create migration file!");
 
-        $migration_stub_path = APPPATH . 'database/stubs/migration.stub';
+        $migration_stub_path = APPPATH . "database/stubs/migration.stub";
 
-        $migration_stub = file_get_contents($migration_stub_path) or exit('Unable to open migration stub!');
+        $migration_stub = file_get_contents($migration_stub_path) or die("Unable to open migration stub!");
 
-        $migration_stub = preg_replace('/{name}/', $name, $migration_stub);
+        $migration_stub = preg_replace("/{name}/", $name, $migration_stub);
 
         fwrite($my_migration, $migration_stub);
 
@@ -135,13 +134,13 @@ class Tools extends CI_Controller
 
         $path = APPPATH . "database/seeds/$className.php";
 
-        $my_seed = fopen($path, 'w') or exit('Unable to create seed file!');
+        $my_seed = fopen($path, "w") or die("Unable to create seed file!");
 
-        $seed_stub_path = APPPATH . 'database/stubs/seed.stub';
+        $seed_stub_path = APPPATH . "database/stubs/seed.stub";
 
-        $seed_stub = file_get_contents($seed_stub_path) or exit('Unable to open seed stub!');
+        $seed_stub = file_get_contents($seed_stub_path) or die("Unable to open seed stub!");
 
-        $seed_stub = preg_replace('/{name}/', $className, $seed_stub);
+        $seed_stub = preg_replace("/{name}/", $className, $seed_stub);
 
         fwrite($my_seed, $seed_stub);
 

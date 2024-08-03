@@ -105,7 +105,7 @@ Object.defineProperty(jQuery.trumbowyg, 'defaultOptions', {
             ['viewHTML'],
             ['undo', 'redo'], // Only supported in Blink browsers
             ['formatting'],
-            ['strong', 'em', 'strikethrough'],
+            ['strong', 'em', 'del'],
             ['superscript', 'subscript'],
             ['link'],
             ['insertImage'],

@@ -127,7 +127,7 @@
                         </a>
                     </li>
                 <?php } ?>
-                <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'vCobranca')) { ?>
+                <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'vLancamento')) { ?>
                     <li class="<?php if (isset($menuCobrancas)) {
                         echo 'active';
                     }; ?>">

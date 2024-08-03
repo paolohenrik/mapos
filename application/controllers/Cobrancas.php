@@ -1,11 +1,15 @@
-<?php
-
-if (! defined('BASEPATH')) {
+<?php if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
 class Cobrancas extends MY_Controller
 {
+    /**
+     * author: Ramon Silva
+     * email: silva018-mg@yahoo.com.br
+     *
+     */
+
     public function __construct()
     {
         parent::__construct();
@@ -22,7 +26,7 @@ class Cobrancas extends MY_Controller
 
     public function adicionar()
     {
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'aCobranca')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'aCobranca')) {
             return $this->output
                 ->set_content_type('application/json')
                 ->set_status_header(403)
@@ -71,7 +75,6 @@ class Cobrancas extends MY_Controller
                 if ($expMsg == 'unauthorized: Must provide your access_token to proceed' || $expMsg == 'Unauthorized') {
                     $expMsg = 'Por favor configurar os dados da API em Config/payment_gatways.php';
                 }
-
                 return $this->output
                     ->set_content_type('application/json')
                     ->set_status_header(500)
@@ -82,7 +85,7 @@ class Cobrancas extends MY_Controller
 
     public function cobrancas()
     {
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vCobranca')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'vCobranca')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para visualizar cobrancas.');
             redirect(base_url());
         }
@@ -104,7 +107,7 @@ class Cobrancas extends MY_Controller
 
     public function excluir()
     {
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'dCobranca')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'dCobranca')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para excluir cobranças');
             redirect(site_url('cobrancas/cobrancas/'));
         }
@@ -125,12 +128,12 @@ class Cobrancas extends MY_Controller
 
     public function atualizar()
     {
-        if (! $this->uri->segment(3) || ! is_numeric($this->uri->segment(3))) {
+        if (!$this->uri->segment(3) || !is_numeric($this->uri->segment(3))) {
             $this->session->set_flashdata('error', 'Item não pode ser encontrado, parâmetro não foi passado corretamente.');
             redirect('mapos');
         }
 
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'eCobranca')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'eCobranca')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para atualizar cobrança.');
             redirect(base_url());
         }
@@ -145,7 +148,7 @@ class Cobrancas extends MY_Controller
 
     public function confirmarPagamento()
     {
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'eCobranca')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'eCobranca')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para confirmar pagamento da cobrança.');
             redirect(base_url());
         }
@@ -160,7 +163,7 @@ class Cobrancas extends MY_Controller
 
     public function cancelar()
     {
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'eCobranca')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'eCobranca')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para cancelar cobrança.');
             redirect(base_url());
         }
@@ -175,12 +178,12 @@ class Cobrancas extends MY_Controller
 
     public function visualizar()
     {
-        if (! $this->uri->segment(3) || ! is_numeric($this->uri->segment(3))) {
+        if (!$this->uri->segment(3) || !is_numeric($this->uri->segment(3))) {
             $this->session->set_flashdata('error', 'Item não pode ser encontrado, parâmetro não foi passado corretamente.');
             redirect('cobrancas');
         }
 
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vCobranca')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'vCobranca')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para visualizar cobranças.');
             redirect(base_url());
         }
@@ -200,12 +203,12 @@ class Cobrancas extends MY_Controller
 
     public function enviarEmail()
     {
-        if (! $this->uri->segment(3) || ! is_numeric($this->uri->segment(3))) {
+        if (!$this->uri->segment(3) || !is_numeric($this->uri->segment(3))) {
             $this->session->set_flashdata('error', 'Item não pode ser encontrado, parâmetro não foi passado corretamente.');
             redirect('cobrancas');
         }
 
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vCobranca')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'vCobranca')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para visualizar cobranças.');
             redirect(base_url());
         }

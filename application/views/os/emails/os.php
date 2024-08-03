@@ -141,7 +141,8 @@ $totalProdutos = 0; ?>
                                 <?= $emitente->nome; ?> <br>
                                 <?= $emitente->rua ?>, <?= $emitente->numero ?>, <?= $emitente->bairro ?><br>
                                 <?= $emitente->cidade ?> - <?= $emitente->uf ?> CEP: <?= $emitente->cep ?> <br>
-                                Responsável: <?= $result->nome ?>
+                                Responsável: <?= $result->nome ?><br>
+                                <?= $result->email_usuario ?>
                             </td>
                         </tr>
                     </table>

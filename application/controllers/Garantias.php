@@ -1,11 +1,15 @@
-<?php
-
-if (! defined('BASEPATH')) {
+<?php if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
 class Garantias extends MY_Controller
 {
+    /**
+     * author: Wilmerson Felipe
+     * email: will.phelipe@gmail.com
+     *
+     */
+
     public function __construct()
     {
         parent::__construct();
@@ -22,7 +26,7 @@ class Garantias extends MY_Controller
 
     public function gerenciar()
     {
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vGarantia')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'vGarantia')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para visualizar Termo de Garantia.');
             redirect(base_url());
         }
@@ -37,13 +41,12 @@ class Garantias extends MY_Controller
         $this->data['results'] = $this->garantias_model->get('garantias', '*', '', $this->data['configuration']['per_page'], $this->uri->segment(3));
 
         $this->data['view'] = 'garantias/garantias';
-
         return $this->layout();
     }
 
     public function adicionar()
     {
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'aGarantia')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'aGarantia')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para adicionar Termo de Garantia.');
             redirect(base_url());
         }
@@ -71,18 +74,17 @@ class Garantias extends MY_Controller
         }
 
         $this->data['view'] = 'garantias/adicionarGarantia';
-
         return $this->layout();
     }
 
     public function editar()
     {
-        if (! $this->uri->segment(3) || ! is_numeric($this->uri->segment(3))) {
+        if (!$this->uri->segment(3) || !is_numeric($this->uri->segment(3))) {
             $this->session->set_flashdata('error', 'Item não pode ser encontrado, parâmetro não foi passado corretamente.');
             redirect('mapos');
         }
 
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'eGarantia')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'eGarantia')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para editar termo de garantia');
             redirect(base_url());
         }
@@ -109,18 +111,17 @@ class Garantias extends MY_Controller
 
         $this->data['result'] = $this->garantias_model->getById($this->uri->segment(3));
         $this->data['view'] = 'garantias/editarGarantia';
-
         return $this->layout();
     }
 
     public function visualizar()
     {
-        if (! $this->uri->segment(3) || ! is_numeric($this->uri->segment(3))) {
+        if (!$this->uri->segment(3) || !is_numeric($this->uri->segment(3))) {
             $this->session->set_flashdata('error', 'Item não pode ser encontrado, parâmetro não foi passado corretamente.');
             redirect('mapos');
         }
 
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vGarantia')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'vGarantia')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para visualizar o termo de garantia.');
             redirect(base_url());
         }
@@ -131,18 +132,17 @@ class Garantias extends MY_Controller
         $this->data['emitente'] = $this->mapos_model->getEmitente();
 
         $this->data['view'] = 'garantias/visualizarGarantia';
-
         return $this->layout();
     }
 
     public function imprimir()
     {
-        if (! $this->uri->segment(3) || ! is_numeric($this->uri->segment(3))) {
+        if (!$this->uri->segment(3) || !is_numeric($this->uri->segment(3))) {
             $this->session->set_flashdata('error', 'Item não pode ser encontrado, parâmetro não foi passado corretamente.');
             redirect('mapos');
         }
 
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vGarantia')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'vGarantia')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para imprimir o Termo de Garantia.');
             redirect(base_url());
         }
@@ -157,12 +157,12 @@ class Garantias extends MY_Controller
 
     public function imprimirGarantiaOs()
     {
-        if (! $this->uri->segment(3) || ! is_numeric($this->uri->segment(3))) {
+        if (!$this->uri->segment(3) || !is_numeric($this->uri->segment(3))) {
             $this->session->set_flashdata('error', 'Item não pode ser encontrado, parâmetro não foi passado corretamente.');
             redirect('mapos');
         }
 
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vGarantia')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'vGarantia')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para imprimir o Termo de Garantia.');
             redirect(base_url());
         }
@@ -177,7 +177,7 @@ class Garantias extends MY_Controller
 
     public function excluir()
     {
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'dGarantia')) {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'dGarantia')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para excluir termo de garantia');
             redirect(base_url());
         }

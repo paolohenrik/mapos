@@ -1,6 +1,4 @@
-<?php
-
-if (! defined('BASEPATH')) {
+<?php if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -23,8 +21,7 @@ class Audit_model extends CI_Model
 
         $query = $this->db->get();
 
-        $result = ! $one ? $query->result() : $query->row();
-
+        $result = !$one ? $query->result() : $query->row();
         return $result;
     }
 
@@ -34,7 +31,6 @@ class Audit_model extends CI_Model
         if ($this->db->affected_rows() == '1') {
             return true;
         }
-
         return false;
     }
 
